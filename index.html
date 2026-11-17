@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jejak Perubahan: Edisi Ular Tangga — IPS SMP Kelas 9</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Fredoka -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            fredoka: ['Fredoka', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              indigo: '#4338CA',
+              amber: '#F59E0B',
+              emerald: '#10B981',
+              rose: '#F43F5E',
+              sky: '#0EA5E9',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Pengaturan Dasar & Tipografi */
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: radial-gradient(circle at 15% 15%, #FEF3C7 0%, #E0F2FE 45%, #EDE9FE 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* Tombol Bergaya 3D Tactile / Bubble */
+    .btn-3d {
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease;
+    }
+    .btn-3d:active:not(:disabled) {
+      transform: translateY(4px);
+    }
+    .btn-3d-amber {
+      box-shadow: 0 6px 0 #B45309, 0 10px 20px rgba(245, 158, 11, 0.35);
+    }
+    .btn-3d-amber:active:not(:disabled) {
+      box-shadow: 0 2px 0 #B45309, 0 4px 10px rgba(245, 158, 11, 0.25);
+    }
+    .btn-3d-indigo {
+      box-shadow: 0 6px 0 #312E81, 0 10px 20px rgba(67, 56, 202, 0.3);
+    }
+    .btn-3d-indigo:active:not(:disabled) {
+      box-shadow: 0 2px 0 #312E81, 0 4px 10px rgba(67, 56, 202, 0.2);
+    }
+    .btn-3d-emerald {
+      box-shadow: 0 6px 0 #047857, 0 10px 20px rgba(16, 185, 129, 0.3);
+    }
+    .btn-3d-emerald:active:not(:disabled) {
+      box-shadow: 0 2px 0 #047857, 0 4px 10px rgba(16, 185, 129, 0.2);
+    }
+    .btn-3d-slate {
+      box-shadow: 0 5px 0 #475569, 0 8px 16px rgba(71, 85, 105, 0.2);
+    }
+    .btn-3d-slate:active:not(:disabled) {
+      box-shadow: 0 2px 0 #475569;
+    }
+
+    /* Animasi Mengambang Latar */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(4deg); }
+    }
+    .animate-float {
+      animation: floatSlow 5s ease-in-out infinite;
+    }
+
+    /* Animasi Pion Melompat */
+    @keyframes pawnHop {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      45% { transform: translate(-50%, -82%) scale(1.22); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    .pawn-hopping {
+      animation: pawnHop 0.24s ease-out;
+    }
+
+    /* Dadu 3D CSS */
+    .dice-scene {
+      width: 76px;
+      height: 76px;
+      perspective: 420px;
+    }
+    .dice-cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .dice-face {
+      position: absolute;
+      width: 76px;
+      height: 76px;
+      background: linear-gradient(145deg, #FFFFFF, #F1F5F9);
+      border: 3px solid #CBD5E1;
+      border-radius: 16px;
+      box-shadow: inset 0 0 10px rgba(148, 163, 184, 0.35);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      padding: 10px;
+      gap: 4px;
+    }
+    .pip {
+      width: 12px;
+      height: 12px;
+      border-radius: 9999px;
+      background: #1E293B;
+      align-self: center;
+      justify-self: center;
+      box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.4);
+    }
+    .pip-red {
+      background: #E11D48;
+    }
+    .face-1 { transform: rotateY(0deg) translateZ(38px); }
+    .face-2 { transform: rotateY(90deg) translateZ(38px); }
+    .face-3 { transform: rotateX(90deg) translateZ(38px); }
+    .face-4 { transform: rotateX(-90deg) translateZ(38px); }
+    .face-5 { transform: rotateY(-90deg) translateZ(38px); }
+    .face-6 { transform: rotateY(180deg) translateZ(38px); }
+
+    /* Transisi Pion Real-Time pada Papan */
+    .game-pawn {
+      position: absolute;
+      transition: left 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: translate(-50%, -50%);
+      z-index: 30;
+      pointer-events: none;
+    }
+
+    /* Animasi Modal Pop-In */
+    @keyframes modalPop {
+      0% { opacity: 0; transform: scale(0.88) translateY(16px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-modal {
+      animation: modalPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    /* Bintang Berkilau pada Kotak Spesial */
+    @keyframes starPulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.18) rotate(12deg); }
+    }
+    .star-badge {
+      animation: starPulse 2.2s ease-in-out infinite;
+    }
+
+    /* Custom Scrollbar untuk Daftar Leaderboard */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(226, 232, 240, 0.5);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94A3B8;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-amber-200">
+
+  <!-- Dekorasi Latar Belakang -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-12 -left-12 w-56 h-56 rounded-full bg-amber-300/30 blur-2xl animate-float"></div>
+    <div class="absolute top-1/3 -right-16 w-72 h-72 rounded-full bg-sky-300/30 blur-2xl animate-float" style="animation-delay: 1.5s;"></div>
+    <div class="absolute -bottom-16 left-1/4 w-64 h-64 rounded-full bg-purple-300/30 blur-2xl animate-float" style="animation-delay: 3s;"></div>
+  </div>
+
+  <!-- Toast Notifikasi Non-Blocking (Pengganti alert()) -->
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-2 pointer-events-none w-11/12 max-w-md"></div>
+
+  <!-- Kontainer Utama Aplikasi -->
+  <main class="relative z-10 max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 min-h-screen flex flex-col justify-center">
+
+    <!-- ===================================================================== -->
+    <!-- 1. HALAMAN AWAL (START SCREEN)                                        -->
+    <!-- ===================================================================== -->
+    <section id="screen-start" class="w-full max-w-2xl mx-auto">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-indigo-100 p-5 sm:p-8">
+        <!-- Header & Badge -->
+        <div class="text-center mb-6">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 font-semibold text-xs sm:text-sm mb-3 shadow-sm">
+            <span>🌍</span>
+            <span>IPS SMP KELAS 9 • PERUBAHAN SOSIAL & GLOBALISASI</span>
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-amber-500 tracking-tight leading-tight">
+            Jejak Perubahan
+          </h1>
+          <p class="text-base sm:text-lg font-semibold text-slate-600 mt-1">
+            Edisi Ular Tangga Dinamika Masyarakat
+          </p>
+        </div>
+
+        <!-- Form Input Pemain & Tim -->
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Pemain 1 (Merah) -->
+            <div class="bg-rose-50/90 border-2 border-rose-200 rounded-2xl p-4 transition focus-within:border-rose-400 focus-within:shadow-md">
+              <label for="input-p1" class="flex items-center gap-2 text-sm font-bold text-rose-700 mb-2">
+                <span class="w-5 h-5 rounded-full bg-rose-500 border-2 border-white shadow inline-block"></span>
+                Pemain 1 (Tim Merah)
+              </label>
+              <input
+                type="text"
+                id="input-p1"
+                maxlength="20"
+                placeholder="Contoh: Raka Pratama"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-rose-200 text-slate-800 font-semibold placeholder:text-slate-400 focus:outline-none focus:border-rose-500"
+              />
+            </div>
+
+            <!-- Pemain 2 (Biru) -->
+            <div class="bg-sky-50/90 border-2 border-sky-200 rounded-2xl p-4 transition focus-within:border-sky-400 focus-within:shadow-md">
+              <label for="input-p2" class="flex items-center gap-2 text-sm font-bold text-sky-700 mb-2">
+                <span class="w-5 h-5 rounded-full bg-sky-500 border-2 border-white shadow inline-block"></span>
+                Pemain 2 (Tim Biru)
+              </label>
+              <input
+                type="text"
+                id="input-p2"
+                maxlength="20"
+                placeholder="Contoh: Nabila Putri"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-sky-200 text-slate-800 font-semibold placeholder:text-slate-400 focus:outline-none focus:border-sky-500"
+              />
+            </div>
+          </div>
+
+          <!-- Kelas & Sekolah (Tim) -->
+          <div class="bg-amber-50/90 border-2 border-amber-200 rounded-2xl p-4 transition focus-within:border-amber-400 focus-within:shadow-md">
+            <label for="input-team" class="flex items-center gap-2 text-sm font-bold text-amber-800 mb-2">
+              <span>🏫</span>
+              <span>Kelas & Sekolah (Identitas Tim)</span>
+            </label>
+            <input
+              type="text"
+              id="input-team"
+              maxlength="36"
+              placeholder="Contoh: Kelas 9A - SMP Negeri 1 Nusantara"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-amber-200 text-slate-800 font-semibold placeholder:text-slate-400 focus:outline-none focus:border-amber-500"
+            />
+          </div>
+
+          <!-- Nama Kreator / Guru Pengampu -->
+          <div class="bg-indigo-50/90 border-2 border-indigo-200 rounded-2xl p-4 transition focus-within:border-indigo-400 focus-within:shadow-md">
+            <label for="input-creator" class="flex items-center gap-2 text-sm font-bold text-indigo-800 mb-2">
+              <span>✍️</span>
+              <span>Nama Kreator / Guru Pengampu</span>
+            </label>
+            <input
+              type="text"
+              id="input-creator"
+              maxlength="40"
+              placeholder="Contoh: Budi Santoso, S.Pd."
+              class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-indigo-200 text-slate-800 font-semibold placeholder:text-slate-400 focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+        </div>
+
+        <!-- Ringkasan Mekanisme Kotak Spesial -->
+        <div class="mt-5 grid grid-cols-2 gap-3 text-xs sm:text-sm">
+          <div class="flex items-center gap-2.5 bg-emerald-50 border border-emerald-200 rounded-2xl p-3">
+            <span class="text-2xl">🪜</span>
+            <div>
+              <p class="font-bold text-emerald-800">Tangga Modernisasi</p>
+              <p class="text-emerald-700 text-xs">Jawab benar = Naik melesat!</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2.5 bg-purple-50 border border-purple-200 rounded-2xl p-3">
+            <span class="text-2xl">🐍</span>
+            <div>
+              <p class="font-bold text-purple-800">Ular Cultural Lag</p>
+              <p class="text-purple-700 text-xs">Jawab benar = Selamat dari turun!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol Aksi Halaman Awal -->
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <button
+            id="btn-start-game"
+            type="button"
+            class="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-900 font-bold text-lg btn-3d btn-3d-amber flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>🎲</span>
+            <span>Mulai Petualangan!</span>
+          </button>
+
+          <button
+            id="btn-open-leaderboard-start"
+            type="button"
+            class="py-3.5 px-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base btn-3d btn-3d-indigo flex items-center justify-center gap-2 cursor-pointer"
+          >
+        <!-- Kontrol Suara & Kredit Kreator di Halaman Awal -->
+        <div class="mt-4 flex flex-wrap justify-between items-center gap-2 text-xs text-slate-500 pt-3 border-t border-slate-100">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+            <span>30 Bank Soal IPS Kelas 9</span>
+            <span class="hidden sm:inline text-slate-300">•</span>
+            <span class="font-semibold text-indigo-600">✍️ Kreator: <span id="display-creator-start">Tim Kreatif IPS Kelas 9</span></span>
+          </div>
+          <button
+            type="button"
+            class="btn-toggle-sound inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition cursor-pointer"
+          >
+            <span class="sound-icon">🔊</span>
+            <span class="sound-label">Suara Aktif</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 2. HALAMAN PERMAINAN (GAME SCREEN)                                    -->
+    <!-- ===================================================================== -->
+    <section id="screen-game" class="hidden w-full">
+      <!-- Top Header Bar -->
+      <header class="bg-white/90 backdrop-blur-md rounded-2xl shadow-md border-2 border-indigo-100 px-4 py-2.5 mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">🌍</span>
+          <div>
+            <h2 class="font-bold text-indigo-700 text-base sm:text-lg leading-none">Jejak Perubahan</h2>
+            <p id="display-team-info" class="text-xs font-semibold text-slate-500 mt-0.5">Kelas 9 - SMP Nusantara</p>
+            <p class="text-[11px] font-semibold text-indigo-600 mt-0.5">✍️ Kreator: <span id="display-creator-game">Tim Kreatif IPS Kelas 9</span></p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            class="btn-toggle-sound p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition cursor-pointer"
+            title="Aktif/Nonaktifkan Suara"
+          >
+            <span class="sound-icon">🔊</span>
+            <span class="sound-label hidden sm:inline">Suara</span>
+          </button>
+
+          <button
+            id="btn-quit-game"
+            type="button"
+            class="px-3 py-2 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-xs sm:text-sm transition cursor-pointer"
+          >
+            Keluar
+          </button>
+        </div>
+      </header>
+
+      <!-- Grid Utama Permainan: Kiri Papan 5x5, Kanan Panel Kontrol & Status -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
+
+        <!-- Kolom Kiri: Papan Ular Tangga 5x5 Zig-Zag -->
+        <div class="lg:col-span-7 flex flex-col items-center">
+          <div class="w-full max-w-[490px] bg-white/95 p-2.5 sm:p-4 rounded-3xl shadow-2xl border-4 border-indigo-200 relative">
+            <!-- Kontainer Aspek Rasio 1:1 untuk Papan + SVG + Pion -->
+            <div id="board-wrapper" class="relative w-full aspect-square rounded-2xl overflow-hidden border-2 border-slate-300 shadow-inner bg-slate-50">
+              <!-- Grid 5x5 Kotak -->
+              <div id="board-grid" class="grid grid-cols-5 grid-rows-5 w-full h-full"></div>
+
+              <!-- Overlay SVG Tangga (Naik) & Ular (Turun) -->
+              <svg
+                id="board-svg-overlay"
+                viewBox="0 0 500 500"
+                class="absolute inset-0 w-full h-full pointer-events-none z-20"
+                preserveAspectRatio="none"
+              ></svg>
+
+              <!-- Pion Pemain 1 (Merah) -->
+              <div id="pawn-1" class="game-pawn" style="left: 10%; top: 90%;">
+                <div class="relative flex flex-col items-center">
+                  <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-rose-400 to-rose-600 border-[3px] border-white shadow-lg flex items-center justify-center text-white font-bold text-xs sm:text-sm">
+                    P1
+                  </div>
+                  <div class="w-3 h-1.5 bg-black/25 rounded-full mt-0.5 blur-[1px]"></div>
+                </div>
+              </div>
+
+              <!-- Pion Pemain 2 (Biru) -->
+              <div id="pawn-2" class="game-pawn" style="left: 10%; top: 90%;">
+                <div class="relative flex flex-col items-center">
+                  <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 border-[3px] border-white shadow-lg flex items-center justify-center text-white font-bold text-xs sm:text-sm">
+                    P2
+                  </div>
+                  <div class="w-3 h-1.5 bg-black/25 rounded-full mt-0.5 blur-[1px]"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legenda Cepat Papan -->
+            <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-600 px-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-block w-3 h-3 rounded-sm bg-emerald-400"></span>
+                <span>⭐ Tangga = Modernisasi (Naik)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="inline-block w-3 h-3 rounded-sm bg-purple-500"></span>
+                <span>⭐ Ular = Cultural Lag (Turun)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: Status Pemain, Dadu Interaktif & Rute Spesial -->
+        <div class="lg:col-span-5 space-y-4">
+
+          <!-- Kartu Status Pemain -->
+          <div class="grid grid-cols-2 gap-3">
+            <!-- Kartu Pemain 1 -->
+            <div id="card-p1" class="rounded-2xl p-3.5 bg-white border-4 border-rose-500 shadow-lg transition-all duration-300">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold">TIM MERAH</span>
+                <span id="badge-turn-p1" class="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-bold animate-pulse">GILIRAN</span>
+              </div>
+              <p id="name-p1" class="font-bold text-slate-800 text-sm sm:text-base truncate">Pemain 1</p>
+              <div class="mt-2 pt-2 border-t border-slate-100 grid grid-cols-2 gap-1 text-xs">
+                <div>
+                  <span class="text-slate-400 block">Petak</span>
+                  <span id="pos-p1" class="font-bold text-rose-600 text-base">1 / 25</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block">Skor</span>
+                  <span id="score-p1" class="font-bold text-slate-700 text-base">0</span>
+                </div>
+              </div>
+              <div class="mt-1 text-[11px] text-slate-500 flex justify-between">
+                <span>Lemparan: <strong id="rolls-p1">0</strong></span>
+                <span>Benar: <strong id="correct-p1">0</strong></span>
+              </div>
+            </div>
+
+            <!-- Kartu Pemain 2 -->
+            <div id="card-p2" class="rounded-2xl p-3.5 bg-white/80 border-2 border-slate-200 shadow transition-all duration-300 opacity-80">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 text-[11px] font-bold">TIM BIRU</span>
+                <span id="badge-turn-p2" class="hidden px-2 py-0.5 rounded-full bg-sky-500 text-white text-[10px] font-bold animate-pulse">GILIRAN</span>
+              </div>
+              <p id="name-p2" class="font-bold text-slate-800 text-sm sm:text-base truncate">Pemain 2</p>
+              <div class="mt-2 pt-2 border-t border-slate-100 grid grid-cols-2 gap-1 text-xs">
+                <div>
+                  <span class="text-slate-400 block">Petak</span>
+                  <span id="pos-p2" class="font-bold text-sky-600 text-base">1 / 25</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block">Skor</span>
+                  <span id="score-p2" class="font-bold text-slate-700 text-base">0</span>
+                </div>
+              </div>
+              <div class="mt-1 text-[11px] text-slate-500 flex justify-between">
+                <span>Lemparan: <strong id="rolls-p2">0</strong></span>
+                <span>Benar: <strong id="correct-p2">0</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel Kocok Dadu Interaktif -->
+          <div class="bg-white/95 rounded-3xl p-5 shadow-xl border-2 border-indigo-100 text-center">
+            <p id="turn-instruction" class="text-sm sm:text-base font-bold text-indigo-700 mb-4">
+              Giliran <span class="text-rose-600">Pemain 1</span> mengocok dadu!
+            </p>
+
+            <div class="flex items-center justify-center gap-6 my-2">
+              <!-- Dadu 3D -->
+              <div class="dice-scene">
+                <div id="dice-cube" class="dice-cube">
+                  <!-- Sisi 1 -->
+                  <div class="dice-face face-1">
+                    <span></span><span></span><span></span>
+                    <span></span><span class="pip pip-red"></span><span></span>
+                    <span></span><span></span><span></span>
+                  </div>
+                  <!-- Sisi 2 -->
+                  <div class="dice-face face-2">
+                    <span class="pip"></span><span></span><span></span>
+                    <span></span><span></span><span></span>
+                    <span></span><span></span><span class="pip"></span>
+                  </div>
+                  <!-- Sisi 3 -->
+                  <div class="dice-face face-3">
+                    <span class="pip"></span><span></span><span></span>
+                    <span></span><span class="pip"></span><span></span>
+                    <span></span><span></span><span class="pip"></span>
+                  </div>
+                  <!-- Sisi 4 -->
+                  <div class="dice-face face-4">
+                    <span class="pip"></span><span></span><span class="pip"></span>
+                    <span></span><span></span><span></span>
+                    <span class="pip"></span><span></span><span class="pip"></span>
+                  </div>
+                  <!-- Sisi 5 -->
+                  <div class="dice-face face-5">
+                    <span class="pip"></span><span></span><span class="pip"></span>
+                    <span></span><span class="pip"></span><span></span>
+                    <span class="pip"></span><span></span><span class="pip"></span>
+                  </div>
+                  <!-- Sisi 6 -->
+                  <div class="dice-face face-6">
+                    <span class="pip"></span><span></span><span class="pip"></span>
+                    <span class="pip"></span><span></span><span class="pip"></span>
+                    <span class="pip"></span><span></span><span class="pip"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tombol Kocok Dadu -->
+              <div class="flex flex-col items-start gap-2">
+                <button
+                  id="btn-roll-dice"
+                  type="button"
+                  class="px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 font-bold text-base sm:text-lg btn-3d btn-3d-amber flex items-center gap-2 cursor-pointer"
+                >
+                  <span>🎲</span>
+                  <span>Kocok Dadu</span>
+                </button>
+                <span id="dice-result-text" class="text-xs font-semibold text-slate-500">
+                  Klik tombol atau tekan Spasi
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daftar Rute Kotak Spesial (⭐) -->
+          <div class="bg-white/90 rounded-2xl p-4 shadow-md border border-slate-200">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5 flex items-center gap-1.5">
+              <span>⭐</span>
+              <span>Peta Kotak Spesial Dinamika Sosial</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 space-y-1">
+                <p class="font-bold text-emerald-800">🪜 Tangga Kemajuan (Naik)</p>
+                <p class="text-emerald-700">• Petak <strong>3 ➔ 13</strong> (Digitalisasi)</p>
+                <p class="text-emerald-700">• Petak <strong>8 ➔ 18</strong> (Pendidikan Maju)</p>
+                <p class="text-emerald-700">• Petak <strong>14 ➔ 23</strong> (Ekonomi Kreatif)</p>
+              </div>
+              <div class="bg-purple-50 border border-purple-200 rounded-xl p-2.5 space-y-1">
+                <p class="font-bold text-purple-800">🐍 Ular Hambatan (Turun)</p>
+                <p class="text-purple-700">• Petak <strong>12 ➔ 4</strong> (Cultural Lag)</p>
+                <p class="text-purple-700">• Petak <strong>19 ➔ 9</strong> (Konsumerisme)</p>
+                <p class="text-purple-700">• Petak <strong>24 ➔ 16</strong> (Etnosentrisme)</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 3. HALAMAN GAME OVER                                                  -->
+    <!-- ===================================================================== -->
+    <section id="screen-gameover" class="hidden w-full max-w-2xl mx-auto">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-amber-300 p-6 sm:p-8 text-center animate-modal">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-100 text-5xl mb-3 shadow-inner">
+          🏆
+        </div>
+        <span class="block text-xs font-bold uppercase tracking-widest text-amber-600 mb-1">
+          Misi Perubahan Sosial Selesai!
+        </span>
+        <h2 id="winner-title" class="text-3xl sm:text-4xl font-bold text-slate-800">
+          Pemain 1 Menang!
+        </h2>
+        <p id="winner-team-badge" class="text-sm font-semibold text-indigo-600 mt-1">
+          Kelas 9 - SMP Nusantara
+        </p>
+        <p class="text-xs font-semibold text-slate-500 mt-1">
+          ✍️ Kreator Game: <span id="display-creator-gameover" class="text-indigo-600">Tim Kreatif IPS Kelas 9</span>
+        </p>
+
+        <!-- Kartu Statistik Kedua Pemain -->
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+          <div id="summary-p1" class="rounded-2xl p-4 bg-rose-50 border-2 border-rose-200">
+            <div class="flex items-center justify-between mb-2">
+              <span id="sum-name-p1" class="font-bold text-rose-800 text-base">Pemain 1</span>
+              <span id="sum-crown-p1" class="text-xl">👑</span>
+            </div>
+            <ul class="space-y-1 text-xs sm:text-sm text-slate-700">
+              <li class="flex justify-between"><span>Posisi Akhir:</span> <strong id="sum-pos-p1">Petak 25</strong></li>
+              <li class="flex justify-between"><span>Total Lemparan Dadu:</span> <strong id="sum-rolls-p1">0x</strong></li>
+              <li class="flex justify-between"><span>Kuis Terjawab Benar:</span> <strong id="sum-correct-p1">0</strong></li>
+              <li class="flex justify-between pt-1.5 border-t border-rose-200 text-base">
+                <span class="font-bold">Total Skor:</span>
+                <strong id="sum-score-p1" class="text-rose-700">0</strong>
+              </li>
+            </ul>
+          </div>
+
+          <div id="summary-p2" class="rounded-2xl p-4 bg-sky-50 border-2 border-sky-200">
+            <div class="flex items-center justify-between mb-2">
+              <span id="sum-name-p2" class="font-bold text-sky-800 text-base">Pemain 2</span>
+              <span id="sum-crown-p2" class="text-xl hidden">👑</span>
+            </div>
+            <ul class="space-y-1 text-xs sm:text-sm text-slate-700">
+              <li class="flex justify-between"><span>Posisi Akhir:</span> <strong id="sum-pos-p2">Petak 18</strong></li>
+              <li class="flex justify-between"><span>Total Lemparan Dadu:</span> <strong id="sum-rolls-p2">0x</strong></li>
+              <li class="flex justify-between"><span>Kuis Terjawab Benar:</span> <strong id="sum-correct-p2">0</strong></li>
+              <li class="flex justify-between pt-1.5 border-t border-sky-200 text-base">
+                <span class="font-bold">Total Skor:</span>
+                <strong id="sum-score-p2" class="text-sky-700">0</strong>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Tombol Navigasi Akhir Permainan -->
+        <div class="mt-7 flex flex-col sm:flex-row gap-3">
+          <button
+            id="btn-play-again"
+            type="button"
+            class="flex-1 py-3.5 px-5 rounded-2xl bg-gradient-to-r from-emerald-400 to-emerald-600 text-white font-bold text-base btn-3d btn-3d-emerald cursor-pointer"
+          >
+            🔄 Main Lagi
+          </button>
+          <button
+            id="btn-view-leaderboard-end"
+            type="button"
+            class="flex-1 py-3.5 px-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base btn-3d btn-3d-indigo cursor-pointer"
+          >
+            🏆 Lihat Leaderboard
+          </button>
+          <button
+            id="btn-back-home-end"
+            type="button"
+            class="py-3.5 px-5 rounded-2xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-base btn-3d btn-3d-slate cursor-pointer"
+          >
+            🏠 Awal
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 4. HALAMAN LEADERBOARD                                                -->
+    <!-- ===================================================================== -->
+    <section id="screen-leaderboard" class="hidden w-full max-w-3xl mx-auto">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-indigo-100 p-5 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Hall of Fame IPS Kelas 9</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 flex items-center gap-2">
+              <span>🏆</span>
+              <span>Papan Peringkat Agen Perubahan</span>
+            </h2>
+          </div>
+
+          <button
+            id="btn-close-leaderboard"
+            type="button"
+            class="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-sm transition cursor-pointer"
+          >
+            ← Kembali
+          </button>
+        </div>
+
+        <!-- Podium 3 Besar -->
+        <div id="podium-container" class="grid grid-cols-3 gap-2 sm:gap-4 items-end mb-6 pt-4 px-1">
+          <!-- Diisi secara dinamis oleh JavaScript -->
+        </div>
+
+        <!-- Daftar Skor Terbaik -->
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden">
+          <div class="px-4 py-2.5 bg-slate-100 border-b border-slate-200 flex justify-between items-center text-xs font-bold text-slate-500 uppercase">
+            <span>Daftar Skor Terbaik</span>
+            <span>Skor & Lemparan</span>
+          </div>
+          <div id="leaderboard-list" class="divide-y divide-slate-200 max-h-64 overflow-y-auto">
+            <!-- Diisi secara dinamis oleh JavaScript -->
+          </div>
+        </div>
+
+        <!-- Footer Leaderboard -->
+        <div class="mt-4 flex justify-between items-center text-xs text-slate-500">
+          <span>Tersimpan otomatis di perangkat ini</span>
+          <button
+            id="btn-reset-leaderboard"
+            type="button"
+            class="px-3 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 font-semibold transition cursor-pointer"
+          >
+            Reset Skor
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL KUIS INTERAKTIF (PERUBAHAN SOSIAL IPS KELAS 9)                    -->
+  <!-- ======================================================================= -->
+  <div id="modal-quiz" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-3xl shadow-2xl border-4 border-indigo-200 w-full max-w-xl overflow-hidden animate-modal">
+      <!-- Header Modal Kuis -->
+      <div id="quiz-modal-header" class="px-5 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <span id="quiz-type-badge" class="px-3 py-0.5 rounded-full bg-white/20 text-xs font-bold tracking-wide">
+            📘 KUIS PERUBAHAN SOSIAL
+          </span>
+          <span id="quiz-category-badge" class="text-xs font-medium text-indigo-100">
+            Bentuk Perubahan
+          </span>
+        </div>
+        <p id="quiz-consequence-hint" class="text-xs sm:text-sm text-amber-200 font-semibold mt-1">
+          Jawab dengan tepat untuk mengamankan langkahmu!
+        </p>
+      </div>
+
+      <!-- Isi Pertanyaan & Pilihan Jawaban -->
+      <div class="p-5 sm:p-6">
+        <h3 id="quiz-question-text" class="text-base sm:text-lg font-bold text-slate-800 leading-snug mb-4">
+          Memuat pertanyaan...
+        </h3>
+
+        <div id="quiz-options-container" class="space-y-2.5">
+          <!-- Tombol opsi A, B, C, D dirender di sini -->
+        </div>
+
+        <!-- Kotak Umpan Balik / Pembahasan -->
+        <div id="quiz-feedback-box" class="hidden mt-4 p-4 rounded-2xl border-2 text-sm">
+          <p id="quiz-feedback-title" class="font-bold text-base mb-1"></p>
+          <p id="quiz-feedback-explanation" class="text-slate-700 leading-relaxed"></p>
+          <button
+            id="btn-quiz-continue"
+            type="button"
+            class="mt-3 w-full py-3 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base shadow-md transition cursor-pointer"
+          >
+            Lanjutkan Permainan ➔
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL KONFIRMASI KUSTOM (PENGGANTI confirm())                           -->
+  <!-- ======================================================================= -->
+  <div id="modal-confirm" class="hidden fixed inset-0 z-[60] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border-4 border-slate-200 w-full max-w-sm p-6 text-center animate-modal">
+      <div class="text-4xl mb-2">⚠️</div>
+      <h3 id="confirm-title" class="text-xl font-bold text-slate-800">Konfirmasi</h3>
+      <p id="confirm-message" class="text-sm text-slate-600 mt-1.5 mb-5">Apakah Anda yakin?</p>
+      <div class="flex gap-3">
+        <button
+          id="btn-confirm-cancel"
+          type="button"
+          class="flex-1 py-2.5 px-4 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-sm cursor-pointer"
+        >
+          Batal
+        </button>
+        <button
+          id="btn-confirm-ok"
+          type="button"
+          class="flex-1 py-2.5 px-4 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-sm cursor-pointer"
+        >
+          Ya, Lanjutkan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- LOGIKA JAVASCRIPT GAME, AUDIO & BANK SOAL                               -->
+  <!-- ======================================================================= -->
+  <script>
+    /**
+     * =========================================================================
+     * 1. BANK SOAL IPS SMP KELAS 9: PERUBAHAN SOSIAL BUDAYA & GLOBALISASI
+     * Berisi 30 soal pilihan ganda berkualitas beserta kategori dan pembahasan.
+     * =========================================================================
+     */
+    const QUESTION_BANK = [
+      {
+        id: 1,
+        category: "Konsep Perubahan Sosial",
+        question: "Menurut Selo Soemardjan, perubahan sosial adalah segala perubahan pada lembaga-lembaga kemasyarakatan yang memengaruhi...",
+        options: [
+          "Sistem sosialnya, termasuk nilai, sikap, dan pola perilaku",
+          "Kondisi geografis dan iklim suatu wilayah",
+          "Jumlah flora dan fauna di lingkungan sekitar",
+          "Batas administratif antarnegara di dunia"
+        ],
+        correctIndex: 0,
+        explanation: "Selo Soemardjan menekankan bahwa perubahan pada lembaga kemasyarakatan akan memengaruhi sistem sosial, nilai, sikap, serta pola perilaku kelompok masyarakat."
+      },
+      {
+        id: 2,
+        category: "Bentuk Perubahan (Waktu)",
+        question: "Peralihan mata pencaharian masyarakat dari masa berburu dan meramu menuju masa bercocok tanam yang berlangsung sangat lama disebut perubahan...",
+        options: [
+          "Revolusi",
+          "Evolusi",
+          "Regres",
+          "Direncanakan"
+        ],
+        correctIndex: 1,
+        explanation: "Evolusi adalah perubahan sosial yang berlangsung secara lambat dan bertahap dalam rentang waktu yang lama tanpa kehendak tertentu."
+      },
+      {
+        id: 3,
+        category: "Bentuk Perubahan (Waktu)",
+        question: "Revolusi Industri di Inggris yang mengubah sistem produksi tenaga manusia menjadi tenaga mesin secara cepat termasuk bentuk perubahan...",
+        options: [
+          "Evolusi sosial",
+          "Perubahan kecil",
+          "Revolusi sosial",
+          "Perubahan regres"
+        ],
+        correctIndex: 2,
+        explanation: "Revolusi adalah perubahan sosial budaya yang berlangsung cepat dan menyangkut dasar atau sendi-sendi pokok kehidupan masyarakat."
+      },
+      {
+        id: 4,
+        category: "Bentuk Perubahan (Pengaruh)",
+        question: "Perubahan tren gaya rambut dan model pakaian remaja setiap tahun tergolong perubahan yang pengaruhnya kecil karena...",
+        options: [
+          "Dilarang oleh lembaga adat setempat",
+          "Hanya diikuti oleh kalangan lansia",
+          "Tidak mengubah struktur lembaga kemasyarakatan",
+          "Menyebabkan konflik sosial berskala nasional"
+        ],
+        correctIndex: 2,
+        explanation: "Perubahan kecil hanya diikuti sebagian golongan tertentu dan tidak membawa pengaruh langsung terhadap struktur kelembagaan masyarakat."
+      },
+      {
+        id: 5,
+        category: "Bentuk Perubahan (Pengaruh)",
+        question: "Penerapan mekanisasi pertanian (penggunaan traktor dan mesin panen modern) membawa pengaruh besar bagi masyarakat desa karena...",
+        options: [
+          "Mengubah sistem kerja, hubungan sosial, dan mata pencaharian",
+          "Hanya memengaruhi warna pakaian para petani",
+          "Menghilangkan seluruh tradisi gotong royong seketika",
+          "Tidak berdampak pada hasil panen masyarakat"
+        ],
+        correctIndex: 0,
+        explanation: "Industrialisasi atau mekanisasi pertanian mengubah struktur mata pencaharian, sistem pembagian kerja, dan hubungan sosial masyarakat agraris."
+      },
+      {
+        id: 6,
+        category: "Bentuk Perubahan (Perencanaan)",
+        question: "Program pembangunan jalan tol dan digitalisasi layanan publik oleh pemerintah merupakan contoh perubahan sosial yang...",
+        options: [
+          "Tidak direncanakan (unplanned change)",
+          "Direncanakan (planned change)",
+          "Berlangsung secara regresif",
+          "Terjadi akibat bencana alam"
+        ],
+        correctIndex: 1,
+        explanation: "Perubahan direncanakan (planned change) adalah perubahan yang dikehendaki dan dirancang terlebih dahulu oleh pihak-pihak yang disebut agent of change."
+      },
+      {
+        id: 7,
+        category: "Bentuk Perubahan (Perencanaan)",
+        question: "Bencana gempa bumi dan tsunami yang memaksa masyarakat pindah ke hunian baru serta mengubah mata pencahariannya merupakan contoh perubahan...",
+        options: [
+          "Direncanakan oleh pemerintah",
+          "Tidak direncanakan (unplanned change)",
+          "Evolusi kebudayaan",
+          "Westernisasi terstruktur"
+        ],
+        correctIndex: 1,
+        explanation: "Bencana alam terjadi di luar jangkauan pengawasan masyarakat sehingga menimbulkan perubahan sosial yang tidak direncanakan."
+      },
+      {
+        id: 8,
+        category: "Faktor Internal",
+        question: "Berikut ini yang merupakan faktor penyebab perubahan sosial yang berasal dari DALAM masyarakat (faktor internal) adalah...",
+        options: [
+          "Peperangan dengan negara lain",
+          "Perubahan iklim dan bencana alam",
+          "Bertambah dan berkurangnya jumlah penduduk",
+          "Masuknya budaya asing melalui internet"
+        ],
+        correctIndex: 2,
+        explanation: "Faktor internal perubahan sosial meliputi dinamika penduduk, penemuan baru, konflik sosial, serta pemberontakan/revolusi."
+      },
+      {
+        id: 9,
+        category: "Penemuan Baru",
+        question: "Penemuan unsur kebudayaan baru berupa alat atau gagasan yang sudah disempurnakan dan diterapkan secara luas oleh masyarakat disebut...",
+        options: [
+          "Discovery",
+          "Invention",
+          "Asimilasi",
+          "Difusi"
+        ],
+        correctIndex: 1,
+        explanation: "Discovery adalah penemuan awal unsur budaya baru, sedangkan Invention adalah tahap ketika masyarakat mengakui, menerima, dan menerapkan penemuan tersebut."
+      },
+      {
+        id: 10,
+        category: "Faktor Eksternal",
+        question: "Penyebaran unsur-unsur kebudayaan seperti teknologi ponsel pintar dari satu masyarakat ke masyarakat lain di dunia disebut...",
+        options: [
+          "Difusi",
+          "Etnosentrisme",
+          "Vested interest",
+          "Sekularisme"
+        ],
+        correctIndex: 0,
+        explanation: "Difusi adalah proses penyebaran unsur-unsur kebudayaan dari satu individu atau kelompok ke individu atau kelompok lainnya."
+      },
+      {
+        id: 11,
+        category: "Kontak Kebudayaan",
+        question: "Arsitektur Masjid Menara Kudus yang memadukan seni bangunan Hindu-Jawa dengan budaya Islam tanpa menghilangkan ciri khas masing-masing merupakan contoh...",
+        options: [
+          "Asimilasi",
+          "Akulturasi",
+          "Penetrasi paksa",
+          "Cultural shock"
+        ],
+        correctIndex: 1,
+        explanation: "Akulturasi adalah perpaduan dua kebudayaan atau lebih yang menghasilkan bentuk budaya baru tanpa menghilangkan unsur asli kebudayaan tersebut."
+      },
+      {
+        id: 12,
+        category: "Kontak Kebudayaan",
+        question: "Peleburan dua kebudayaan yang berbeda sehingga melahirkan kebudayaan baru dan menghilangkan ciri khas kebudayaan lama disebut...",
+        options: [
+          "Asimilasi",
+          "Akulturasi",
+          "Akomodasi",
+          "Inovasi"
+        ],
+        correctIndex: 0,
+        explanation: "Asimilasi ditandai dengan usaha mengurangi perbedaan antarindividu/kelompok hingga melahirkan kebudayaan tunggal yang baru."
+      },
+      {
+        id: 13,
+        category: "Faktor Pendorong",
+        question: "Sistem pendidikan formal yang maju dapat mendorong terjadinya perubahan sosial karena...",
+        options: [
+          "Mengajarkan masyarakat untuk menolak teknologi baru",
+          "Membuka pola pikir rasional, ilmiah, dan berorientasi masa depan",
+          "Membatasi interaksi pelajar dengan budaya luar",
+          "Mempertahankan tradisi lama tanpa evaluasi"
+        ],
+        correctIndex: 1,
+        explanation: "Pendidikan formal yang maju melatih kemampuan berpikir kritis, objektif, dan inovatif sehingga mempercepat penerimaan hal-hal baru yang bermanfaat."
+      },
+      {
+        id: 14,
+        category: "Faktor Penghambat",
+        question: "Masyarakat yang tinggal di daerah terpencil dan sulit dijangkau transportasi cenderung lambat mengalami perubahan sosial. Faktor penghambatnya adalah...",
+        options: [
+          "Sikap terbuka terhadap inovasi",
+          "Kurangnya hubungan dengan masyarakat lain",
+          "Sistem lapisan sosial yang terbuka",
+          "Penduduk yang sangat heterogen"
+        ],
+        correctIndex: 1,
+        explanation: "Isolasi geografis menyebabkan kurangnya kontak dengan masyarakat luar sehingga informasi dan gagasan baru sulit masuk."
+      },
+      {
+        id: 15,
+        category: "Faktor Penghambat",
+        question: "Kelompok penguasa atau golongan tertentu yang menolak pembaruan karena takut kehilangan kedudukan dan keuntungannya dipengaruhi oleh faktor...",
+        options: [
+          "Vested interest (kepentingan yang tertanam kuat)",
+          "Heterogenitas penduduk",
+          "Orientasi ke masa depan",
+          "Toleransi budaya"
+        ],
+        correctIndex: 0,
+        explanation: "Vested interest adalah kepentingan yang sudah tertanam kuat pada suatu kelompok yang merasa diuntungkan oleh sistem lama."
+      },
+      {
+        id: 16,
+        category: "Sikap Masyarakat",
+        question: "Sikap menilai kebudayaan lain dengan menggunakan ukuran kebudayaan sendiri dan menganggap budayanya paling unggul disebut...",
+        options: [
+          "Nasionalisme",
+          "Etnosentrisme",
+          "Empati sosial",
+          "Globalisme"
+        ],
+        correctIndex: 1,
+        explanation: "Etnosentrisme menumbuhkan prasangka terhadap budaya lain dan menghambat proses kerja sama maupun perubahan sosial yang positif."
+      },
+      {
+        id: 17,
+        category: "Dampak Perubahan Sosial",
+        question: "Pesatnya perkembangan teknologi smartphone belum diimbangi oleh kesadaran etika bermedia sosial sehingga marak hoaks. Fenomena ini disebut...",
+        options: [
+          "Cultural shock",
+          "Cultural lag (ketertinggalan budaya)",
+          "Modernisasi",
+          "Asimilasi budaya"
+        ],
+        correctIndex: 1,
+        explanation: "Cultural lag (William F. Ogburn) terjadi ketika budaya material (teknologi) berkembang lebih cepat daripada budaya non-material (nilai, norma, dan perilaku)."
+      },
+      {
+        id: 18,
+        category: "Dampak Perubahan Sosial",
+        question: "Seseorang yang baru pindah dari desa terpencil ke kota metropolitan merasa bingung dan tertekan menghadapi ritme hidup kota yang serba cepat. Kondisi ini disebut...",
+        options: [
+          "Cultural shock (gegar budaya)",
+          "Cultural lag",
+          "Difusi budaya",
+          "Revolusi mental"
+        ],
+        correctIndex: 0,
+        explanation: "Cultural shock adalah guncangan psikologis atau rasa canggung ketika seseorang berhadapan dengan lingkungan budaya baru yang sangat berbeda."
+      },
+      {
+        id: 19,
+        category: "Modernisasi & Westernisasi",
+        question: "Perbedaan mendasar antara modernisasi dan westernisasi terletak pada...",
+        options: [
+          "Modernisasi menolak ilmu pengetahuan, westernisasi menerimanya",
+          "Modernisasi berorientasi kemajuan IPTEK tanpa meninggalkan jati diri bangsa, sedangkan westernisasi meniru gaya hidup Barat secara mutlak",
+          "Westernisasi hanya terjadi di desa, modernisasi hanya di kota",
+          "Modernisasi melarang penggunaan bahasa daerah"
+        ],
+        correctIndex: 1,
+        explanation: "Modernisasi bersifat selektif dan rasional untuk kemajuan bangsa, sedangkan westernisasi meniru perilaku Barat tanpa filter nilai lokal."
+      },
+      {
+        id: 20,
+        category: "Dampak Negatif",
+        question: "Kebiasaan membeli barang-barang bermerek secara berlebihan demi gengsi dan pengakuan status sosial, bukan karena kebutuhan, disebut...",
+        options: [
+          "Konsumerisme",
+          "Produktivitas",
+          "Efisiensi",
+          "Filantropi"
+        ],
+        correctIndex: 0,
+        explanation: "Konsumerisme adalah gaya hidup yang menganggap barang mewah sebagai ukuran kebahagiaan sehingga mendorong konsumsi berlebihan."
+      },
+      {
+        id: 21,
+        category: "Dampak Negatif",
+        question: "Pandangan hidup yang menganggap bahwa kesenangan dan kenikmatan materi merupakan tujuan utama dalam hidup disebut...",
+        options: [
+          "Hedonisme",
+          "Idealism",
+          "Pragmatisme",
+          "Patriotisme"
+        ],
+        correctIndex: 0,
+        explanation: "Hedonisme membuat individu cenderung mengejar kesenangan sesaat dan mengabaikan nilai tanggung jawab sosial."
+      },
+      {
+        id: 22,
+        category: "Globalisasi Ekonomi",
+        question: "Kemudahan masyarakat Indonesia berbelanja produk UMKM maupun barang luar negeri melalui aplikasi lokapasar (e-commerce) merupakan wujud globalisasi di bidang...",
+        options: [
+          "Pertahanan dan keamanan",
+          "Ekonomi dan perdagangan",
+          "Kesenian tradisional",
+          "Sistem kekerabatan"
+        ],
+        correctIndex: 1,
+        explanation: "Globalisasi ekonomi ditandai dengan terintegrasinya aktivitas perdagangan, investasi, dan transaksi digital melintasi batas negara."
+      },
+      {
+        id: 23,
+        category: "Globalisasi Komunikasi",
+        question: "Konsep 'borderless world' (dunia tanpa batas) pada era globalisasi terutama didorong oleh kemajuan pesat di bidang...",
+        options: [
+          "Pertanian tradisional",
+          "Teknologi informasi, komunikasi, dan transportasi",
+          "Pertambangan batu bara",
+          "Kerajinan gerabah"
+        ],
+        correctIndex: 1,
+        explanation: "Internet, satelit komunikasi, dan transportasi modern memungkinkan arus informasi dan mobilitas manusia berlangsung dalam hitungan detik."
+      },
+      {
+        id: 24,
+        category: "Dampak Globalisasi",
+        question: "Menurunnya nilai dan moral bangsa akibat masuknya tontonan dan budaya asing tanpa penyaringan yang tepat disebut...",
+        options: [
+          "Demoralisasi",
+          "Revitalisasi",
+          "Modernisasi",
+          "Social climbing"
+        ],
+        correctIndex: 0,
+        explanation: "Demoralisasi adalah kemerosotan moral yang tercermin dari perilaku menyimpang seperti pudarnya sopan santun dan meningkatnya kriminalitas."
+      },
+      {
+        id: 25,
+        category: "Upaya Menghadapi Globalisasi",
+        question: "Sikap paling bijak bagi pelajar SMP dalam menghadapi derasnya arus budaya populer asing di media sosial adalah...",
+        options: [
+          "Menutup diri total dari segala informasi luar negeri",
+          "Meniru seluruh tren asing agar dianggap modern",
+          "Menyaring budaya asing sesuai nilai Pancasila dan kearifan lokal",
+          "Meninggalkan kesenian daerah karena dianggap kuno"
+        ],
+        correctIndex: 2,
+        explanation: "Sikap selektif dengan berpegang pada Pancasila dan kearifan lokal menjaga identitas bangsa sekaligus tetap terbuka pada kemajuan."
+      },
+      {
+        id: 26,
+        category: "Kearifan Lokal",
+        question: "Tradisi 'Subak' di Bali dalam mengatur sistem irigasi pertanian secara adil dan harmonis merupakan contoh peran kearifan lokal dalam...",
+        options: [
+          "Menghambat kemajuan pertanian modern",
+          "Menjaga kelestarian lingkungan dan solidaritas sosial",
+          "Mendorong gaya hidup individualis",
+          "Menghapus peran pemerintah daerah"
+        ],
+        correctIndex: 1,
+        explanation: "Kearifan lokal seperti Subak menjadi modal sosial yang menjaga keseimbangan ekologi dan harmoni masyarakat di tengah perubahan zaman."
+      },
+      {
+        id: 27,
+        category: "Agen Perubahan",
+        question: "Pihak-pihak yang mempelopori, merencanakan, dan memimpin masyarakat dalam melakukan perubahan sosial ke arah yang lebih baik disebut...",
+        options: [
+          "Agent of change (agen perubahan)",
+          "Social climber",
+          "Out-group",
+          "Laggard"
+        ],
+        correctIndex: 0,
+        explanation: "Agent of change adalah individu atau lembaga yang mendapat kepercayaan masyarakat sebagai pemimpin perubahan sosial terencana."
+      },
+      {
+        id: 28,
+        category: "Dampak Positif",
+        question: "Salah satu dampak positif perubahan sosial budaya bagi peningkatan kualitas sumber daya manusia di Indonesia adalah...",
+        options: [
+          "Meningkatnya kesenjangan sosial ekonomi",
+          "Berkembangnya ilmu pengetahuan dan teknologi pendidikan",
+          "Memudarnya semangat gotong royong di perkotaan",
+          "Meningkatnya pencemaran limbah industri"
+        ],
+        correctIndex: 1,
+        explanation: "Kemajuan IPTEK membuka akses pembelajaran digital, riset, dan inovasi yang meningkatkan daya saing generasi muda."
+      },
+      {
+        id: 29,
+        category: "Interaksi Sosial Modern",
+        question: "Fenomena 'phubbing' (asyik bermain ponsel sendiri saat berkumpul bersama keluarga atau teman) menunjukkan dampak negatif perubahan sosial berupa...",
+        options: [
+          "Meningkatnya solidaritas mekanik",
+          "Melemahnya interaksi sosial tatap muka dan munculnya sikap individualis",
+          "Bertambahnya jumlah penduduk desa",
+          "Terjadinya akulturasi bahasa daerah"
+        ],
+        correctIndex: 1,
+        explanation: "Ketergantungan pada gawai dapat mengurangi kualitas komunikasi langsung dan memperlemah kepekaan sosial di lingkungan terdekat."
+      },
+      {
+        id: 30,
+        category: "Faktor Pendorong",
+        question: "Masyarakat dengan komposisi penduduk yang beragam suku, agama, dan latar belakang budaya (heterogen) lebih mudah mengalami perubahan sosial karena...",
+        options: [
+          "Tidak memiliki aturan hukum yang mengikat",
+          "Sering terjadi pertukaran gagasan, inovasi, dan toleransi antarbudaya",
+          "Semua penduduk memiliki pekerjaan yang sama persis",
+          "Tidak pernah berinteraksi dengan dunia luar"
+        ],
+        correctIndex: 1,
+        explanation: "Heterogenitas masyarakat memicu pertemuan beragam ide dan kebudayaan yang mendorong kreativitas serta pembaruan sosial."
+      }
+    ];
+
+    /**
+     * =========================================================================
+     * 2. WEB AUDIO API SYNTHESIZER (EFEK SUARA TANPA FILE EKSTERNAL)
+     * =========================================================================
+     */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        return this.muted;
+      }
+
+      playTone(freq, type = 'sine', duration = 0.15, startTimeOffset = 0, volume = 0.18) {
+        if (this.muted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+
+          const now = this.ctx.currentTime + startTimeOffset;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, now);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.exponentialRampToValueAtTime(volume, now + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + duration + 0.02);
+        } catch (e) {
+          // Abaikan jika browser membatasi audio sebelum interaksi
+        }
+      }
+
+      // Suara kocok dadu (ketukan kayu/plastik cepat)
+      playDiceRoll() {
+        if (this.muted) return;
+        const hits = 7;
+        for (let i = 0; i < hits; i++) {
+          const pitch = 260 + Math.random() * 240;
+          this.playTone(pitch, 'triangle', 0.06, i * 0.09, 0.16);
+        }
+      }
+
+      // Suara pion melangkah per kotak
+      playStep(stepIndex = 1) {
+        const baseFreq = 380 + (stepIndex * 35);
+        this.playTone(baseFreq, 'sine', 0.11, 0, 0.16);
+      }
+
+      // Suara naik tangga (arpeggio naik ceria)
+      playLadder() {
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((n, idx) => {
+          this.playTone(n, 'triangle', 0.22, idx * 0.1, 0.2);
+        });
+      }
+
+      // Suara turun ular (meluncur turun)
+      playSnake() {
+        const notes = [493.88, 415.30, 329.63, 246.94];
+        notes.forEach((n, idx) => {
+          this.playTone(n, 'sawtooth', 0.22, idx * 0.11, 0.12);
+        });
+      }
+
+      // Suara jawaban kuis BENAR
+      playCorrect() {
+        this.playTone(587.33, 'sine', 0.15, 0, 0.2);
+        this.playTone(739.99, 'sine', 0.15, 0.11, 0.2);
+        this.playTone(880.00, 'triangle', 0.32, 0.22, 0.22);
+      }
+
+      // Suara jawaban kuis SALAH
+      playWrong() {
+        this.playTone(246.94, 'sawtooth', 0.2, 0, 0.14);
+        this.playTone(196.00, 'sawtooth', 0.35, 0.18, 0.14);
+      }
+
+      // Suara kemenangan (Fanfare)
+      playWin() {
+        const melody = [
+          { f: 523.25, d: 0.14, t: 0.0 },
+          { f: 659.25, d: 0.14, t: 0.15 },
+          { f: 783.99, d: 0.14, t: 0.30 },
+          { f: 1046.50, d: 0.35, t: 0.45 },
+          { f: 783.99, d: 0.15, t: 0.85 },
+          { f: 1046.50, d: 0.55, t: 1.02 }
+        ];
+        melody.forEach(m => this.playTone(m.f, 'triangle', m.d, m.t, 0.24));
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /**
+     * =========================================================================
+     * 3. KONFIGURASI PAPAN 5x5 ZIG-ZAG & RUTE KOTAK SPESIAL (⭐)
+     * =========================================================================
+     */
+    const BOARD_SIZE = 5;
+    const TOTAL_TILES = 25;
+
+    // Rute Tangga (Naik = Modernisasi & Kemajuan Sosial)
+    const LADDERS = {
+      3: { to: 13, label: "Digitalisasi" },
+      8: { to: 18, label: "Pendidikan Maju" },
+      14: { to: 23, label: "Ekonomi Kreatif" }
+    };
+
+    // Rute Ular (Turun = Cultural Lag & Hambatan Sosial)
+    const SNAKES = {
+      12: { to: 4, label: "Cultural Lag" },
+      19: { to: 9, label: "Konsumerisme" },
+      24: { to: 16, label: "Etnosentrisme" }
+    };
+
+    /**
+     * Menghitung koordinat baris visual (0..4 dari atas) dan kolom (0..4 dari kiri)
+     * untuk nomor petak 1..25 dengan pola zig-zag mulai dari kiri bawah.
+     */
+    function getTileGridCoords(tileNumber) {
+      const clamped = Math.max(1, Math.min(TOTAL_TILES, tileNumber));
+      const zeroIdx = clamped - 1;
+      const rowFromBottom = Math.floor(zeroIdx / BOARD_SIZE); // 0 = bawah, 4 = atas
+      const visualRow = (BOARD_SIZE - 1) - rowFromBottom;
+      const posInRow = zeroIdx % BOARD_SIZE;
+
+      // Baris genap dari bawah (0, 2, 4) berjalan Kiri -> Kanan
+      // Baris ganjil dari bawah (1, 3) berjalan Kanan -> Kiri
+      const visualCol = (rowFromBottom % 2 === 0)
+        ? posInRow
+        : (BOARD_SIZE - 1) - posInRow;
+
+      return { visualRow, visualCol };
+    }
+
+    /**
+     * Mendapatkan persentase titik tengah (x%, y%) sebuah petak pada papan 5x5
+     */
+    function getTileCenterPercent(tileNumber) {
+      const { visualRow, visualCol } = getTileGridCoords(tileNumber);
+      return {
+        x: (visualCol * 20) + 10,
+        y: (visualRow * 20) + 10
+      };
+    }
+
+    /**
+     * =========================================================================
+     * 4. STATE PERMAINAN & PENYIMPANAN LOCALSTORAGE
+     * =========================================================================
+     */
+    const LEADERBOARD_KEY = 'jejak_perubahan_ips9_leaderboard_v1';
+    const CREATOR_KEY = 'jejak_perubahan_creator_v1';
+    const DEFAULT_CREATOR_NAME = 'Tim Kreatif IPS Kelas 9';
+
+    function loadCreatorName() {
+      try {
+        const saved = localStorage.getItem(CREATOR_KEY);
+        return saved && saved.trim() ? saved.trim() : DEFAULT_CREATOR_NAME;
+      } catch (e) {
+        return DEFAULT_CREATOR_NAME;
+      }
+    }
+
+    function saveCreatorName(name) {
+      const cleanName = (name || '').trim() || DEFAULT_CREATOR_NAME;
+      try {
+        localStorage.setItem(CREATOR_KEY, cleanName);
+      } catch (e) {
+        // Abaikan jika localStorage dibatasi
+      }
+      updateCreatorDisplays(cleanName);
+      return cleanName;
+    }
+
+    function updateCreatorDisplays(name) {
+      const displayName = (name || '').trim() || DEFAULT_CREATOR_NAME;
+      const elStart = document.getElementById('display-creator-start');
+      const elGame = document.getElementById('display-creator-game');
+      const elOver = document.getElementById('display-creator-gameover');
+      if (elStart) elStart.textContent = displayName;
+      if (elGame) elGame.textContent = displayName;
+      if (elOver) elOver.textContent = displayName;
+    }
+
+    const DEFAULT_LEADERBOARD = [
+// ... existing code ... -->
+    // State utama game
+    const gameState = {
+      teamName: 'Kelas 9 - SMP Nusantara',
+      creatorName: DEFAULT_CREATOR_NAME,
+      currentTurn: 1, // 1 atau 2
+// ... existing code ... -->
+    function startNewMatch() {
+      const rawP1 = document.getElementById('input-p1').value.trim();
+      const rawP2 = document.getElementById('input-p2').value.trim();
+      const rawTeam = document.getElementById('input-team').value.trim();
+      const rawCreator = document.getElementById('input-creator').value.trim();
+
+      gameState.creatorName = saveCreatorName(rawCreator);
+
+      gameState.players[1] = {
+// ... existing code ... -->
+    // Event Listeners Tombol & Keyboard
+    document.addEventListener('DOMContentLoaded', () => {
+      // Muat & sinkronkan Nama Kreator yang tersimpan
+      const savedCreator = loadCreatorName();
+      const inputCreatorEl = document.getElementById('input-creator');
+      if (savedCreator !== DEFAULT_CREATOR_NAME) {
+        inputCreatorEl.value = savedCreator;
+      }
+      updateCreatorDisplays(savedCreator);
+
+      inputCreatorEl.addEventListener('input', (e) => {
+        saveCreatorName(e.target.value);
+      });
+
+      // Tombol Mulai Game
+      document.getElementById('btn-start-game').addEventListener('click', startNewMatch);
+// ... existing code ... -->
